@@ -35,7 +35,7 @@ const CreateLink = () => {
                         <Paper>
                             <TextField error={!!errors.longUrl} name="longUrl" inputRef={register} fullWidth placeholder="Inser Long Url" variant="outlined"/>
                         </Paper>
-                        <Button variant="contained" type="submit">Submit</Button>
+                        <Button color="primary" variant="contained" type="submit">Submit</Button>
                     </form>
                 </Grid>
             </Grid>
