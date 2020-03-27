@@ -45,6 +45,7 @@ app.use(function(req, res, next) {
 
 app.use('/', require('./api/Code'));
 app.use('/api/links', require('./api/Links'));
+app.use('/auth', require('./auth').default);
 
 app.listen(
   SERVE_PORT, 

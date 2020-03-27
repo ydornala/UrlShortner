@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 var LinkSchema = new mongoose.Schema({
     urlCode: String,
     longUrl: String,
-    shortUrl: String
+    shortUrl: String,
 }, {
     timestamps: true
 });
