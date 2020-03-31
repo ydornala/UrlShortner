@@ -1,7 +1,9 @@
+import passport from 'passport';
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./config/environment');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const { SERVE_HOSTNAME, SERVE_PORT } = require('../src/config.json');
 const cookieSession = require('cookie-session');
@@ -13,8 +15,6 @@ const { v4: uuid } = require('uuid')
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 
-console.log('conf', config);
-
 mongoose
   .connect(
     config.mongo.uri,
@@ -25,8 +25,10 @@ mongoose
 
 const app = express();
 
+app.use(cookieParser());
+app.use(passport.initialize());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cookieSession({
   name: 'shortlinks',
@@ -36,12 +38,10 @@ app.use(cookieSession({
 
 
 app.use(function(req, res, next) {
-  console.log(`${req.method} ${req.url}`);
   req.session.id = (req.session.id || uuid());
   res.header('Access-Control-Allow-Origin', '*');
   next(); // pass control to the next handler
 });
-
 
 app.use('/', require('./api/Code'));
 app.use('/api/links', require('./api/Links'));

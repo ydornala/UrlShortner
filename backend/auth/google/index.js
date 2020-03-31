@@ -8,11 +8,11 @@ router
     .get('/', passport.authenticate('google', {
      failureRedirect: '/register',
      scope: ['profile',' email'],
-     session: true
+     session: false
     }))
     .get('/callback', passport.authenticate('google', {
         failureRedirect: 'register',
-        session: true
+        session: false
     }), setTokenCookie);
 
     export default router;

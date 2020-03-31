@@ -1,8 +1,8 @@
-import runSequence from 'run-sequence';
 import run from 'gulp-run-command';
-import gulp from 'gulp';
+import {src, dest, task, series} from 'gulp';
 import nodemon from 'nodemon';
 import babel from 'gulp-babel';
+import sourcemaps from 'gulp-sourcemaps';
 
 const serverPath = 'backend';
 
@@ -10,22 +10,24 @@ function onServerLog(log) {
     console.log(log.message);
 }
 
-gulp.task('start:server', () => {    
-   return gulp.src(`${serverPath}/**/*.js`)
-    .pipe(babel())
-    .pipe(gulp.dest("dist"));
+task('start:server', () => {
+    process.env.NODE_ENV = process.env.NODE_ENV || 'development';    
+    return nodemon(`-w ${serverPath}/dist ${serverPath}/dist`)
+    .on('log', onServerLog);
 })
 
-gulp.task('watch', () => {
-    return nodemon(`-w ${serverPath} ${serverPath}`)
-        .on('log', onServerLog);
-});
+// task('watch', series(watch([`${serverPath}/**/*.js}`, 'start:server'])));
 
-gulp.task('start:client', run(['npm start']));
+task('start:client', run(['npm start']));
 
-gulp.task('serve', (cb) => {
-    runSequence(
-        ['start:server', 'watch'],
-        cb
-    );
-});
+task('serve', series('start:server', (done) => {
+    done();
+}));
+
+task('default', () => {
+    return src(`${serverPath}/**/*.js`)
+        .pipe(sourcemaps.init())
+        .pipe(babel())
+        .pipe(sourcemaps.write('.'))
+        .pipe(dest('./dist'))
+})

@@ -19,7 +19,7 @@ export function setup(User, config) {
                     email: profile.emails[0].value,
                     username: profile.emails[0].value.split('@')[0],
                     provider: 'google',
-                    google: profile._json
+                    google: profile
                 });
                 user.save()
                     .then(savedUser => done(null, savedUser))
